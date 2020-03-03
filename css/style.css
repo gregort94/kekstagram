@@ -1447,3 +1447,19 @@ main {
     grid-row: 1 / span 3;
   }
 }
+/* Custom */
+[data-scale = "25%"] {
+  transform: scale(0.25);
+} 
+[data-scale = "50%"] {
+  transform: scale(0.5);
+} 
+[data-scale = "75%"] {
+  transform: scale(0.75);
+} 
+[data-scale = "100%"] {
+  transform: scale(1);
+} 
+/*input:invalid {
+  background-color: red;
+}*/

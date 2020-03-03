@@ -109,6 +109,8 @@ var socialCommentsList = document.querySelector('.social__comments');
 var picturesContainer = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
+var formComment = document.querySelector('.text__description');
+
 /* ссылки на элементы блока big-picture*/
 var bigPicture = document.querySelector('.big-picture');
 var photo = document.querySelector('.big-picture__img img');
@@ -126,8 +128,9 @@ renderPictures(dataArray);
 bigPictureCansel.addEventListener('click', closeBigPicture);
 document.addEventListener('keydown', function (evt) {
 	// alert(evt.keyCode);
-	if (evt.keyCode === 27) {
+	if (evt.keyCode === 27 && evt.target != formComment ) {
 		closeBigPicture();
+		closeEditPhoto();
 	}
 })
 
