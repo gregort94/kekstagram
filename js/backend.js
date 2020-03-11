@@ -1,7 +1,8 @@
 (function () {
 	var URL_LOAD = 'https://js.dump.academy/kekstagram/data';
+	var URL_UPLOAD = 'https://js.dump.academy/kekstagram';
 
-	var load = function (onLoad){
+	var load = function (successHandler){
 		var xhr = new XMLHttpRequest();
 		xhr.responseType = 'json';
 
@@ -9,9 +10,8 @@
 		   var error;
 		   switch (xhr.status) {
 		      case 200:
-		        onLoad(xhr.response);
+		        successHandler(xhr.response);
 		        break;
-
 		      case 400:
 		        error = 'Неверный запрос';
 		        break;
@@ -27,7 +27,7 @@
 		     }
 
 		      if (error) {
-		     		onError(error);
+		     		alert(error);
 		     }
 		});
 		
@@ -35,8 +35,43 @@
 		xhr.send();
 		return xhr
 	}
+
+	var upload = function(data, successHandler, errorHandler){
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener('load', function(){
+
+			var loadingSection = document.querySelector('.img-upload__message--loading');
+			loadingSection.classList.add('hidden');
+
+			var error;
+			switch (xhr.status) {
+			   case 200:
+			     successHandler();
+			     break;
+			   case 400:
+			     error = 'Неверный запрос';
+			     break;
+			   case 401:
+			     error = 'Пользователь не авторизован';
+			     break;
+			   case 404:
+			     error = 'Ничего не найдено';
+			     break;
+
+			   default:
+			      error = 'Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
+			}
+			if (error){
+				errorHandler(error);
+			}		
+		})
+		xhr.open('POST', URL_UPLOAD) ;
+		xhr.send(data);	
+	}
+
 	window.backend = {
 		load: load,
+		upload: upload,
 	};
 
 })();

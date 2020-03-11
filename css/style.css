@@ -1232,7 +1232,7 @@ main {
    ========================================================================== */
 
 .img-upload__message {
-  position: absolute;
+  position: fixed;
   z-index: 2;
   left: 50%;
   top: 0;
@@ -1367,7 +1367,7 @@ main {
  * Экран загрузки изображения
  */
 
-.img-upload__message--loading::before {
+/*.img-upload__message--loading::before {
   content: "";
   position: absolute;
   bottom: 40%;
@@ -1381,9 +1381,9 @@ main {
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
-}
+}*/
 
-.img-upload__message--loading::after {
+/*.img-upload__message--loading::after {
   content: "";
   position: absolute;
   bottom: 40%;
@@ -1397,7 +1397,7 @@ main {
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
-}
+}*/
 
 
 /* Адаптивности чуток
@@ -1444,9 +1444,7 @@ main {
     grid-row: 1 / span 3;
   }
 }
-.hidden {
-  display: none;
-}
+
 /* Custom */
 [data-scale = "25%"] {
   transform: scale(0.25);
@@ -1463,3 +1461,45 @@ main {
 .invalid {
   border-color: red;
 }
+.img-upload__message--loading {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  justify-content: center;
+  -ms-align-items: flex-start;
+  align-items: flex-start;
+}
+
+.loader {
+  position: absolute;
+  animation-name: spin;
+  animation-timing-function: linear;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  border-radius: 50%;
+  margin-top: 30px;
+  border: 4px solid;
+  border-left: #FC0303: 
+
+}
+.loader__span {
+  position: absolute;
+  height: 4px;
+  width: 100%;
+  background-color: black;
+  top: 50%;
+
+}
+@keyframes spin {
+  from {transform: rotate(0deg); }
+  to {transform: rotate(360deg);}
+}
+.hidden {
+  display: none;
+}
+

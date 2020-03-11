@@ -6,12 +6,18 @@
 
 	var uploadFileInput = document.querySelector('#upload-file');
 
+	var uploadForm = document.querySelector('#upload-select-image');
+
 	var uploadFormOverlay = document.querySelector('.img-upload__overlay');
 
 	var uploadFormClose = uploadFormOverlay.querySelector('.img-upload__cancel');
-	var uploadForm = uploadFormOverlay.querySelector('#upload-select-image');
+
 	var previewImg = uploadFormOverlay.querySelector('.img-upload__preview img');
 	var filterButtons = uploadFormOverlay.querySelectorAll ('.effects__preview');
+
+	var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+
+	var loadingSection = document.querySelector('.img-upload__message--loading');
 
 /* Элементы уравления размером картинки*/
 	var scaleBiggerBtn = uploadFormOverlay.querySelector('.scale__control--bigger');
@@ -38,6 +44,11 @@
 	var closeEditPhoto = function () {
 		uploadFormOverlay.classList.add('hidden');
 		uploadFileInput.files[0] = '';
+		/* Задаем настроки фильтра по умолчанию*/
+		currentFilterName = 'none';
+		applyFilter();
+		hashtags.value = '';
+		photoDescription.value = '';
 	}
 
 /* ============ Управление размером картинки ============*/
@@ -226,10 +237,7 @@
 
 /* Закрытие окна редактирования фото */
 	uploadFormClose.addEventListener('click', closeEditPhoto);
-	uploadFormClose.addEventListener('click', function(){
-		currentFilterName = 'none';
-		applyFilter();
-	});
+
 	document.addEventListener('keydown', function (evt) {
 		// alert(evt.keyCode);
 		if (evt.keyCode === 27 && evt.target != photoDescription ) {
@@ -252,11 +260,32 @@
 
 /*==================================================================*/
 
-/*Добавлене секции об ошибке загрузки*/
-	var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-	var errorSection = errorTemplate.cloneNode(true);
-	errorSection.classList.add('hidden');
-	document.body.appendChild(errorSection);
+
+/* Добавлене секции об ошибке загрузки */
+	var showError = function (errorText){
+		closeEditPhoto();
+		var errorSection = errorTemplate.cloneNode(true);
+		var errorTitle = errorSection.querySelector('.error__title');
+		errorTitle.textContent = errorText;
+		var errorBtns = errorSection.querySelectorAll('.error__button'); 
+		for (var i = 0; i < errorBtns.length; i++) {
+			errorBtns[i].addEventListener('click', hideError);
+		}
+		document.body.appendChild(errorSection);
+	}
+
+/* Прячем сообщение об ошибке */
+	var hideError = function (){
+		document.querySelector('.error').remove();
+	}
+
+	uploadForm.addEventListener('submit', function(evt){
+		evt.preventDefault();
+		loadingSection.classList.remove('hidden');
+		window.backend.upload(new FormData(uploadForm), closeEditPhoto, showError )		
+	})
+
+	console.log(loadingSection.style)
 
 })();
 

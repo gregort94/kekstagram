@@ -240,9 +240,12 @@
   </template>
 
   <!-- Экран загрузки изображения -->
-  <template id="messages">
-    <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
-  </template>
+  <div class="img-upload__message  img-upload__message--loading hidden">Загружаем...
+    <div class="loader">
+      <div class="loader__span"></div>
+    </div>
+  </div>
+
 <script src="js/backend.js"></script>
 <script src="js/data.js"></script>
 <script src="js/pictures.js"></script>
