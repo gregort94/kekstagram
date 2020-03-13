@@ -31,6 +31,7 @@
 		      if (error) {
 		     		alert(error);
 		     }
+		   window.currentPhotoArray = xhr.response ;
 		});
 		
 		xhr.open('GET', URL_LOAD);

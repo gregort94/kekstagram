@@ -23,6 +23,7 @@
 
 /*==================== Вывод на стрницу фотографий ==================*/
 
+
 /* Генерация фотографии*/
 	var generatePicture = function (data){
 		var picture = pictureTemplate.cloneNode(true);
@@ -92,7 +93,8 @@
 /* Открываем фотографию в полноэкранном режиме*/
 	var openBigPicture = function (){
 		bigPicture.classList.remove('hidden');
-		bigPictureContain(xhr.response[this.getAttribute('data-order')]);
+		var positionInDataArray = this.getAttribute('data-order');
+		bigPictureContain(currentPhotoArray[positionInDataArray]);	
 	}
 
 /* Закрываем фотографию в полноэкранном режиме*/
@@ -127,25 +129,24 @@
 
 /* Хэндлеры для каждой из кнопок*/
 	var newBtnActiveHadler = function(){
-		var photoDataArray = xhr.response;
-		sortBtnActiveHandler(photoDataArray, this);			
+		window.currentPhotoArray = xhr.response;
+		sortBtnActiveHandler(currentPhotoArray, this);			
 	}
 
 	var popularBtnActiveHadler = function(){
-		var photoDataArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.likes - prevData.likes });
-		sortBtnActiveHandler(photoDataArray, this);
+		window.currentPhotoArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.likes - prevData.likes });
+		sortBtnActiveHandler(currentPhotoArray, this);
 	}
 
 	var discussedBtnActiveHadler = function(){
-		var photoDataArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.comments.length - prevData.comments.length });
-		sortBtnActiveHandler(photoDataArray, this);
+		window.currentPhotoArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.comments.length - prevData.comments.length });
+		sortBtnActiveHandler(currentPhotoArray, this);
 	}
 
 /* Задаем кнопкам хендлеры*/
 	sortPopular.addEventListener('click', popularBtnActiveHadler );
 	sortNew.addEventListener('click', newBtnActiveHadler );
 	sortDiscussed.addEventListener('click', discussedBtnActiveHadler );
-
 /*........................................................................*/
 })();
 
