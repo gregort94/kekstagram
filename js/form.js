@@ -1,22 +1,18 @@
 (function () {
-/*Константы*/
+
+/*............Константы.................*/
 	var DEFAULT_SCALE_VALUE = 100;
 	var MIN_IMG_SCALE_VALUE = 25;
 	var MAX_IMG_SCALE_VALUE = 100;
+/*......................................*/
 
 	var uploadFileInput = document.querySelector('#upload-file');
-
 	var uploadForm = document.querySelector('#upload-select-image');
-
 	var uploadFormOverlay = document.querySelector('.img-upload__overlay');
-
 	var uploadFormClose = uploadFormOverlay.querySelector('.img-upload__cancel');
-
 	var previewImg = uploadFormOverlay.querySelector('.img-upload__preview img');
 	var filterButtons = uploadFormOverlay.querySelectorAll ('.effects__preview');
-
 	var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-
 	var loadingSection = document.querySelector('.img-upload__message--loading');
 
 /* Элементы уравления размером картинки*/
@@ -51,7 +47,9 @@
 		photoDescription.value = '';
 	}
 
+
 /* ============ Управление размером картинки ============*/
+
 	var increaseScaleValue = function () {
 		var numValue = parseInt(scaleValue.value);
 		if (numValue < MAX_IMG_SCALE_VALUE){
@@ -59,6 +57,7 @@
 		}
 		scaleValue.value = numValue + '%';
 	}
+
 	var decreaseScaleValue = function () {
 		var numValue = parseInt(scaleValue.value);
 		if (numValue > MIN_IMG_SCALE_VALUE){
@@ -70,7 +69,7 @@
 /* Задаем атрибут отвечающий за размер картинки*/
 	var setImgScaleClass = function() {
 		previewImg.removeAttribute('data-scale');
-		
+	
 		if (scaleValue.value === '25%'){
 			previewImg.setAttribute('data-scale', '25%');
 		}else if(scaleValue.value === '50%'){
@@ -81,7 +80,9 @@
 			previewImg.setAttribute('data-scale', '100%');
 		}
 	}
-/*======================================================*/
+
+/*..........................................................*/
+
 
 /*  ============= Управление фильтром на фото ===========  */
 	var currentFilterName = 'none';
@@ -155,6 +156,7 @@
 			effectLvlWrap.classList.remove('hidden');
 		}
 	}
+
 /* События при клике на пин + движение мышки*/
 	effectLvlPin.addEventListener('mousedown', function(){
 		effectLvlLineOffsetX = effectLvlLine.getBoundingClientRect().x;
@@ -165,7 +167,8 @@
 		window.removeEventListener('mousemove', movePin);
 		window.removeEventListener('mousemove', applyFilter);
 	})
-/*======================================================*/
+/*..........................................................*/
+
 
 /* ============== Валидация хэш-тэгов ==============*/
 
@@ -218,6 +221,9 @@
 		}
 	}
 
+/*..........................................................*/
+
+
 /*=========== Установка обработчиков событий ============*/
 
 /* Изменение поля загрузки файла */
@@ -258,8 +264,9 @@
 	hashtags.addEventListener('input', setDefaultValidity );
 	hashtags.addEventListener('invalid', setInvalidInput );
 
-/*==================================================================*/
+/*..........................................................*/
 
+/*================== Обработка секции с ошибкой загрузки =============*/
 
 /* Добавлене секции об ошибке загрузки */
 	var showError = function (errorText){
@@ -284,8 +291,7 @@
 		loadingSection.classList.remove('hidden');
 		window.backend.upload(new FormData(uploadForm), closeEditPhoto, showError )		
 	})
-
-	console.log(loadingSection.style)
+/*................................................................*/
 
 })();
 

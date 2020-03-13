@@ -5,7 +5,7 @@
 	var picturesContainer = document.querySelector('.pictures');
 	var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-/* ссылки на элементы блока big-picture*/
+/* Элементы блока big-picture*/
 	var bigPicture = document.querySelector('.big-picture');
 	var photo = document.querySelector('.big-picture__img img');
 	var likesCount = document.querySelector('.likes-count');
@@ -13,7 +13,17 @@
 	var description = document.querySelector('.social__caption');
 	var bigPictureCansel =  document.querySelector('.big-picture__cancel');
 
-/*Генерация фотографии*/
+/* Элементы блока сортировки фото*/
+	var sortBlock = document.querySelector('.img-filters');
+	var sortButtons = sortBlock.querySelectorAll('.img-filters__button');
+	var sortNew = sortBlock.querySelector('#filter-new');
+	var sortPopular = sortBlock.querySelector('#filter-popular');
+	var sortDiscussed = sortBlock.querySelector('#filter-discussed');
+
+
+/*==================== Вывод на стрницу фотографий ==================*/
+
+/* Генерация фотографии*/
 	var generatePicture = function (data){
 		var picture = pictureTemplate.cloneNode(true);
 		var pictureImg = picture.querySelector('.picture__img');
@@ -25,20 +35,36 @@
 		picture.addEventListener('click', openBigPicture);
 		return picture;
 	}
-/*Генерация и вывод на страницу фотографий */
+
+/* Вывод на страницу фотографий */
+	var currentPicturesArray = [];
 	var renderPictures = function (data){
+	/* Очищаем временный массив с фотографиями при повторном рендере*/
+		currentPicturesArray.forEach(function(item){
+			item.remove();
+		})
+		currentPicturesArray.length = 0;
 		for (var i =0; i < data.length; i++){
 			var pictureData = data[i];
 			var picture = generatePicture(pictureData);
 			picture.setAttribute('data-order', i);
 			picturesContainer.appendChild(picture);
+			currentPicturesArray.push(picture);
 		}
+	/* Отобразить блок сортировки фотографий*/
+		sortBlock.classList.remove('img-filters--inactive');
 	}
 
-/*  Вызываем функцию генерации массива (запросом на сервер) и возвращаем обьект xhr  */
+/* Вызываем функцию генерации массива данных для фото (запросом на сервер).
+	Выводим фотографии на страницу  */
 	var xhr = window.backend.load(renderPictures);
 
-/*Генерация комментария (элемента) */
+/*........................................................................*/
+
+
+/*==================== Полноэкранный режим просмотра фото ======================= */
+
+/* Генерация комментария (элемента) */
 	var generateCommentElement = function (commentText) {
 		var socialComment = commentTemplate.cloneNode(true);
 		var commentAvatar = socialComment.querySelector('.social__picture');
@@ -47,7 +73,8 @@
 		commentTextElem.textContent = commentText;
 		return socialComment;
 	}
-	/*Наполняем данными открытую фотографию*/
+
+/* Наполняем данными открытую фотографию*/
 	var bigPictureContain = function (dataObject){
 		photo.src = dataObject.url;
 		likesCount.textContent = dataObject.likes;
@@ -61,25 +88,65 @@
 			socialCommentsList.appendChild(comment);
 		}
 	}
-	/*Открываем фотографию в полноэкранном режиме*/
+
+/* Открываем фотографию в полноэкранном режиме*/
 	var openBigPicture = function (){
 		bigPicture.classList.remove('hidden');
 		bigPictureContain(xhr.response[this.getAttribute('data-order')]);
 	}
-	/*Закрываем фотографию в полноэкранном режиме*/
+
+/* Закрываем фотографию в полноэкранном режиме*/
 	var closeBigPicture = function (){
 		bigPicture.classList.add('hidden');
 	}
 
-	/*добавляем eventListener для кнопки закрытия полноэкранного фото*/
 	bigPictureCansel.addEventListener('click', closeBigPicture);
 	document.addEventListener('keydown', function (evt) {
-		// alert(evt.keyCode);
 		if (evt.keyCode === 27) {
 			closeBigPicture();
 		}
 	})
+/*...............................................................*/
 
+
+/*============== Сортировка фото на странице ==============*/
+
+/* Действия при нажатии на любую из кнопок */
+	var timerID; 
+	var sortBtnActiveHandler = function (photoArray, element){
+		toggleSortBtnClass(element);
+		clearTimeout(timerID);
+		timerID = setTimeout(function(){renderPictures(photoArray)}, 500);			
+	}
+
+/* Задание класса актиной кнопке */
+	var toggleSortBtnClass = function(element){
+		sortButtons.forEach(function(btn){ btn.classList.remove('img-filters__button--active')});
+		element.classList.add('img-filters__button--active');
+	}
+
+/* Хэндлеры для каждой из кнопок*/
+	var newBtnActiveHadler = function(){
+		var photoDataArray = xhr.response;
+		sortBtnActiveHandler(photoDataArray, this);			
+	}
+
+	var popularBtnActiveHadler = function(){
+		var photoDataArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.likes - prevData.likes });
+		sortBtnActiveHandler(photoDataArray, this);
+	}
+
+	var discussedBtnActiveHadler = function(){
+		var photoDataArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.comments.length - prevData.comments.length });
+		sortBtnActiveHandler(photoDataArray, this);
+	}
+
+/* Задаем кнопкам хендлеры*/
+	sortPopular.addEventListener('click', popularBtnActiveHadler );
+	sortNew.addEventListener('click', newBtnActiveHadler );
+	sortDiscussed.addEventListener('click', discussedBtnActiveHadler );
+
+/*........................................................................*/
 })();
 
 

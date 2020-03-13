@@ -1,4 +1,6 @@
+
 (function () {
+ 
 /*Генерация массива данных для фотографий*/
 	var generateDataArray = function (objectNumber){
 		var dataArray =[];
@@ -18,7 +20,8 @@
 			'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
 			'Вот это тачка!'
 		]
-	/*Генерация обьекта с данными для фотографии*/
+		
+/*Генерация обьекта с данными для фотографии*/
 		var generateObject = function (){
 			var likesVal = getRandomInt(15, 200);
 			var randomCommentsQuantity  = getRandomInt(1	, 5);
@@ -31,13 +34,13 @@
 			var descriptionNumber = getRandomInt(0, descriptionArray.length - 1);
 			var randomDescription = descriptionArray[descriptionNumber];
 
-			var object = {
+			var data = {
 				url: 'photos/'+(i+1)+'.jpg',
 				likes: likesVal,
 				comments: randomComments ,
 				description: randomDescription ,
 			}
-			return object
+			return data
 		}
 		for(var i = 0; i < objectNumber; i++){
 			var dataObject = generateObject();

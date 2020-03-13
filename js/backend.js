@@ -2,6 +2,8 @@
 	var URL_LOAD = 'https://js.dump.academy/kekstagram/data';
 	var URL_UPLOAD = 'https://js.dump.academy/kekstagram';
 
+/* Получение массива данных для фото с сервера. 
+   Вывод фотографий на страницу сразу после получения данных*/
 	var load = function (successHandler){
 		var xhr = new XMLHttpRequest();
 		xhr.responseType = 'json';
@@ -36,6 +38,7 @@
 		return xhr
 	}
 
+/* Отправка данных формы загружаемой фотографии на сервер */
 	var upload = function(data, successHandler, errorHandler){
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', function(){
@@ -69,9 +72,11 @@
 		xhr.send(data);	
 	}
 
+/*===================== Экспорт ====================*/
 	window.backend = {
 		load: load,
 		upload: upload,
 	};
+
 
 })();
