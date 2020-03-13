@@ -50,6 +50,7 @@
 
 /* ============ Управление размером картинки ============*/
 
+/* Увеличить значение размера*/
 	var increaseScaleValue = function () {
 		var numValue = parseInt(scaleValue.value);
 		if (numValue < MAX_IMG_SCALE_VALUE){
@@ -58,6 +59,7 @@
 		scaleValue.value = numValue + '%';
 	}
 
+/* Уменьшить значение размера*/
 	var decreaseScaleValue = function () {
 		var numValue = parseInt(scaleValue.value);
 		if (numValue > MIN_IMG_SCALE_VALUE){
@@ -68,49 +70,54 @@
 
 /* Задаем атрибут отвечающий за размер картинки*/
 	var setImgScaleClass = function() {
-		previewImg.removeAttribute('data-scale');
-	
-		if (scaleValue.value === '25%'){
-			previewImg.setAttribute('data-scale', '25%');
-		}else if(scaleValue.value === '50%'){
-			previewImg.setAttribute('data-scale', '50%');
-		}else if(scaleValue.value === '75%'){
-			previewImg.setAttribute('data-scale', '75%');
-		}else if(scaleValue.value === '100%'){
-			previewImg.setAttribute('data-scale', '100%');
-		}
+		var value = scaleValue.value;
+		previewImg.setAttribute('data-scale', value);
 	}
+
+/* Устанавливам слушателей клика по кнопке изменения размера картинки */
+
+	scaleBiggerBtn.addEventListener('click', increaseScaleValue );
+	scaleSmallerBtn.addEventListener('click', decreaseScaleValue );
+	scaleBiggerBtn.addEventListener('click', setImgScaleClass );
+	scaleSmallerBtn.addEventListener('click', setImgScaleClass );
 
 /*..........................................................*/
 
 
 /*  ============= Управление фильтром на фото ===========  */
+
 	var currentFilterName = 'none';
 	var filterPercent = 100;
 	var currentFilterValue = '';
 
 /* Определяем имя фильтра*/
-	var changeImgFilterName = function(evt) {
-		currentFilterName = this.getAttribute('data-filterName');
+	var changeImgFilterName = function(element) {
+		currentFilterName = element.getAttribute('data-filterName');
 	}
 
 /* Определяем уровень фильтра в %*/
 	var setPercentValue = function (){
-		filterPercent = effectLvlDepth.clientWidth  / effectLvlLine.clientWidth *100;
+		filterPercent = effectLvlDepth.clientWidth  / effectLvlLine.clientWidth;
 	} 
 
 /* Определяем значение фильтра*/
 	var setFilterValue = function (){
-		if (currentFilterName === 'grayscale' ){
-			currentFilterValue = (filterPercent / 100);
-		}else if (currentFilterName === 'sepia' ){
-			currentFilterValue = (filterPercent / 100);
-		}else if (currentFilterName === 'invert' ){
-			currentFilterValue = (filterPercent * 100 / 100) + '%';
-		}else if (currentFilterName === 'blur' ){
-			currentFilterValue = (filterPercent * 3 / 100) + 'px';
-		}else if (currentFilterName === 'brightness' ){
-			currentFilterValue = (filterPercent * 3 / 100);
+		switch (currentFilterName){
+			case 'grayscale':
+				currentFilterValue = (filterPercent);
+				break
+			case 'sepia':
+				currentFilterValue = (filterPercent);
+				break
+			case 'invert':
+				currentFilterValue = (filterPercent * 100 ) + '%';
+				break
+			case 'blur':
+				currentFilterValue = (filterPercent * 3 ) + 'px';
+				break
+			case 'brightness':
+				currentFilterValue = (filterPercent * 3 );
+				break
 		}
 	}
 
@@ -137,12 +144,10 @@
 	var movePin = function (evt){
 		evt.preventDefault();
 		var offsetLeft = evt.clientX - effectLvlLineOffsetX;
-		if (offsetLeft < 0) { return };
-		if (offsetLeft > effectLvlLineWidth) { return };
+		if (offsetLeft < 0 || offsetLeft > effectLvlLineWidth) { return };
 		effectLvlPin.style.left = offsetLeft + 'px' ;
 		effectLvlDepth.style.width = offsetLeft + 'px' ;
-
-	/*Применяем фильтр к фотографии*/
+	/* Применяем фильтр к фотографии*/
 		setPercentValue();
 		setFilterValue();
 		applyFilter();
@@ -157,6 +162,17 @@
 		}
 	}
 
+/* Задаем cлушателей клика на кнопку фильтра*/
+		for (var i = 0; i < filterButtons.length; i++) {	
+			filterButtons[i].addEventListener('click', function (){
+				changeImgFilterName(this);
+				hideFilterLvlLine();
+				setDefaultEfectLvl();
+				setFilterValue();
+				applyFilter();
+			} );
+		}
+
 /* События при клике на пин + движение мышки*/
 	effectLvlPin.addEventListener('mousedown', function(){
 		effectLvlLineOffsetX = effectLvlLine.getBoundingClientRect().x;
@@ -167,12 +183,13 @@
 		window.removeEventListener('mousemove', movePin);
 		window.removeEventListener('mousemove', applyFilter);
 	})
+
 /*..........................................................*/
 
 
 /* ============== Валидация хэш-тэгов ==============*/
 
-/*Проверка и формирование сообщения в случае невалидности поля*/
+/* Проверка и формирование сообщения в случае невалидности поля*/
 	var checkHashtgsValidity = function(){
 		var message = '';
 		//проверяем есть ли каке либо условия невалидности хэштэгов
@@ -203,7 +220,7 @@
 				}
 			} 
 		}
-		/*Устанавливаем сформированное сообщение*/
+		/* Устанавливаем сформированное сообщение*/
 		hashtags.setCustomValidity(message);
 	}
 
@@ -221,50 +238,32 @@
 		}
 	}
 
-/*..........................................................*/
-
-
-/*=========== Установка обработчиков событий ============*/
-
-/* Изменение поля загрузки файла */
-	uploadFileInput.addEventListener('change', openEditPhoto);
-	uploadFileInput.addEventListener('change', setImgScaleClass);
-	uploadFileInput.addEventListener('change', hideFilterLvlLine);
-	uploadFileInput.addEventListener('change', hideFilterLvlLine);
-
-/* Переключение фильтров*/
-	for (var i = 0; i < filterButtons.length; i++) {	
-		filterButtons[i].addEventListener('click', changeImgFilterName );
-		filterButtons[i].addEventListener('click', hideFilterLvlLine );
-		filterButtons[i].addEventListener('click', setDefaultEfectLvl );
-		filterButtons[i].addEventListener('click', setFilterValue );
-		filterButtons[i].addEventListener('click', applyFilter );
-	}
-
-/* Закрытие окна редактирования фото */
-	uploadFormClose.addEventListener('click', closeEditPhoto);
-
-	document.addEventListener('keydown', function (evt) {
-		// alert(evt.keyCode);
-		if (evt.keyCode === 27 && evt.target != photoDescription ) {
-			closeEditPhoto();
-		}
-	})
-
-/* Нажатие на кнопки изменения размера фото */
-	//изменение значения элемента scaleValue
-	scaleBiggerBtn.addEventListener('click', increaseScaleValue );
-	scaleSmallerBtn.addEventListener('click', decreaseScaleValue );
-	//изменение размера непосредственно картинки 
-	scaleBiggerBtn.addEventListener('click', setImgScaleClass );
-	scaleSmallerBtn.addEventListener('click', setImgScaleClass );
-
-/* Изменения в поле хэш-тэга*/
+/* События при изменении в поле хэш-тэг*/
 	hashtags.addEventListener('change', checkHashtgsValidity );
 	hashtags.addEventListener('input', setDefaultValidity );
 	hashtags.addEventListener('invalid', setInvalidInput );
 
 /*..........................................................*/
+
+
+/*============ Установка обработчиков событий ============*/
+
+/* Изменение поля загрузки файла */
+	uploadFileInput.addEventListener('change', openEditPhoto);
+	uploadFileInput.addEventListener('change', setImgScaleClass);
+	uploadFileInput.addEventListener('change', hideFilterLvlLine);
+
+
+/* Закрытие окна редактирования фото */
+	uploadFormClose.addEventListener('click', closeEditPhoto);
+	document.addEventListener('keydown', function (evt) {
+		if (evt.keyCode === 27 && evt.target != photoDescription ) {
+			closeEditPhoto();
+		}
+	})
+
+/*..........................................................*/
+
 
 /*================== Обработка секции с ошибкой загрузки =============*/
 

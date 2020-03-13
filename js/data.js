@@ -1,4 +1,3 @@
-
 (function () {
  
 /*Генерация массива данных для фотографий*/
@@ -20,34 +19,34 @@
 			'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
 			'Вот это тачка!'
 		]
-		
-/*Генерация обьекта с данными для фотографии*/
-		var generateObject = function (){
-			var likesVal = getRandomInt(15, 200);
-			var randomCommentsQuantity  = getRandomInt(1	, 5);
-			var randomComments = [];
-			for (var j = 0; j < randomCommentsQuantity; j++) {
-				var commentNumber = getRandomInt(0, commentsArray.length - 1);
-				var randomComment = commentsArray[commentNumber];
-				randomComments.push(randomComment);
-			}
-			var descriptionNumber = getRandomInt(0, descriptionArray.length - 1);
-			var randomDescription = descriptionArray[descriptionNumber];
 
-			var data = {
-				url: 'photos/'+(i+1)+'.jpg',
-				likes: likesVal,
-				comments: randomComments ,
-				description: randomDescription ,
-			}
-			return data
+/*Генерация обьекта с данными для фотографии*/
+	var generateObject = function (){
+		var likesVal = getRandomInt(15, 200);
+		var randomCommentsQuantity  = getRandomInt(1	, 5);
+		var randomComments = [];
+		for (var j = 0; j < randomCommentsQuantity; j++) {
+			var commentNumber = getRandomInt(0, commentsArray.length - 1);
+			var randomComment = commentsArray[commentNumber];
+			randomComments.push(randomComment);
 		}
-		for(var i = 0; i < objectNumber; i++){
-			var dataObject = generateObject();
-			dataArray.push(dataObject);
+		var descriptionNumber = getRandomInt(0, descriptionArray.length - 1);
+		var randomDescription = descriptionArray[descriptionNumber];
+
+		var data = {
+			url: 'photos/'+(i+1)+'.jpg',
+			likes: likesVal,
+			comments: randomComments ,
+			description: randomDescription ,
 		}
-		return dataArray
+		return data
 	}
+	for(var i = 0; i < objectNumber; i++){
+		var dataObject = generateObject();
+		dataArray.push(dataObject);
+	}
+	return dataArray
+}
 
 /*Генерация случайного целого числа в диапазоне*/
 	var getRandomInt = function (min, max) {
