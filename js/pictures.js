@@ -35,7 +35,7 @@
 		pictureComment.textContent = data.comments.length;
 		picture.addEventListener('click', openBigPicture);
 		return picture;
-	}
+	};
 
 /* Вывод на страницу фотографий */
 	var currentPicturesArray = [];
@@ -43,18 +43,19 @@
 	/* Очищаем временный массив с фотографиями при повторном рендере*/
 		currentPicturesArray.forEach(function(item){
 			item.remove();
-		})
+		});
 		currentPicturesArray.length = 0;
-		for (var i =0; i < data.length; i++){
-			var pictureData = data[i];
+
+		data.forEach(function(pictureData, i){
 			var picture = generatePicture(pictureData);
 			picture.setAttribute('data-order', i);
 			picturesContainer.appendChild(picture);
 			currentPicturesArray.push(picture);
-		}
+		});
+
 	/* Отобразить блок сортировки фотографий*/
 		sortBlock.classList.remove('img-filters--inactive');
-	}
+	};
 
 /* Вызываем функцию генерации массива данных для фото (запросом на сервер).
 	Выводим фотографии на страницу  */
@@ -73,7 +74,7 @@
 		var commentTextElem = socialComment.querySelector('.social__text');
 		commentTextElem.textContent = commentText;
 		return socialComment;
-	}
+	};
 
 /* Наполняем данными открытую фотографию*/
 	var bigPictureContain = function (dataObject){
@@ -83,31 +84,31 @@
 		var commentsArray = dataObject.comments;
 		description.textContent = dataObject.description;
 		socialCommentsList.textContent = '';
-		for (var i = 0; i < commentsArray.length; i++) {
-			var commentText = commentsArray[i].message;
-			var comment = generateCommentElement(commentText);
+
+		commentsArray.forEach(function(commentText){
+			var comment = generateCommentElement(commentText.message);
 			socialCommentsList.appendChild(comment);
-		}
-	}
+		});
+	};
 
 /* Открываем фотографию в полноэкранном режиме*/
 	var openBigPicture = function (){
 		bigPicture.classList.remove('hidden');
 		var positionInDataArray = this.getAttribute('data-order');
 		bigPictureContain(currentPhotoArray[positionInDataArray]);	
-	}
+	};
 
 /* Закрываем фотографию в полноэкранном режиме*/
 	var closeBigPicture = function (){
 		bigPicture.classList.add('hidden');
-	}
+	};
 
 	bigPictureCansel.addEventListener('click', closeBigPicture);
 	document.addEventListener('keydown', function (evt) {
 		if (evt.keyCode === 27) {
 			closeBigPicture();
 		}
-	})
+	});
 /*...............................................................*/
 
 
@@ -118,30 +119,34 @@
 	var sortBtnActiveHandler = function (photoArray, element){
 		toggleSortBtnClass(element);
 		clearTimeout(timerID);
-		timerID = setTimeout(function(){renderPictures(photoArray)}, 500);			
-	}
+		timerID = setTimeout(function(){
+			renderPictures(photoArray)
+		}, 500);			
+	};	
 
 /* Задание класса актиной кнопке */
 	var toggleSortBtnClass = function(element){
 		sortButtons.forEach(function(btn){ btn.classList.remove('img-filters__button--active')});
 		element.classList.add('img-filters__button--active');
-	}
+	};
 
 /* Хэндлеры для каждой из кнопок*/
 	var newBtnActiveHadler = function(){
 		window.currentPhotoArray = xhr.response;
 		sortBtnActiveHandler(currentPhotoArray, this);			
-	}
+	};
 
 	var popularBtnActiveHadler = function(){
-		window.currentPhotoArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.likes - prevData.likes });
+		var originalPhotoArrayCopy = xhr.response.slice(); 
+		window.currentPhotoArray = originalPhotoArrayCopy.sort(function(prevData, nextData){return nextData.likes - prevData.likes });
 		sortBtnActiveHandler(currentPhotoArray, this);
-	}
+	};
 
 	var discussedBtnActiveHadler = function(){
-		window.currentPhotoArray = xhr.response.slice().sort(function(prevData, nextData){return nextData.comments.length - prevData.comments.length });
+		var originalPhotoArrayCopy = xhr.response.slice(); 
+		window.currentPhotoArray = originalPhotoArrayCopy.sort(function(prevData, nextData){return nextData.comments.length - prevData.comments.length });
 		sortBtnActiveHandler(currentPhotoArray, this);
-	}
+	};
 
 /* Задаем кнопкам хендлеры*/
 	sortPopular.addEventListener('click', popularBtnActiveHadler );

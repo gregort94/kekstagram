@@ -34,7 +34,7 @@
 	var openEditPhoto = function (){		
 		scaleValue.value = DEFAULT_SCALE_VALUE + '%'; // Устанавливаем значение по умолчанию для scaleValue
 		uploadFormOverlay.classList.remove('hidden');
-	}
+	};
 
 /*Закрытие формы редактирования фото*/ 
 	var closeEditPhoto = function () {
@@ -45,7 +45,7 @@
 		applyFilter();
 		hashtags.value = '';
 		photoDescription.value = '';
-	}
+	};
 
 
 /* ============ Управление размером картинки ============*/
@@ -57,7 +57,7 @@
 			numValue += 25;
 		}
 		scaleValue.value = numValue + '%';
-	}
+	};
 
 /* Уменьшить значение размера*/
 	var decreaseScaleValue = function () {
@@ -66,13 +66,13 @@
 			numValue -= 25;
 		}
 		scaleValue.value = numValue + '%';
-	}
+	};
 
 /* Задаем атрибут отвечающий за размер картинки*/
 	var setImgScaleClass = function() {
 		var value = scaleValue.value;
 		previewImg.setAttribute('data-scale', value);
-	}
+	};
 
 /* Устанавливам слушателей клика по кнопке изменения размера картинки */
 
@@ -93,12 +93,12 @@
 /* Определяем имя фильтра*/
 	var changeImgFilterName = function(element) {
 		currentFilterName = element.getAttribute('data-filterName');
-	}
+	};
 
 /* Определяем уровень фильтра в %*/
 	var setPercentValue = function (){
 		filterPercent = effectLvlDepth.clientWidth  / effectLvlLine.clientWidth;
-	} 
+	};
 
 /* Определяем значение фильтра*/
 	var setFilterValue = function (){
@@ -119,7 +119,7 @@
 				currentFilterValue = (filterPercent * 3 );
 				break
 		}
-	}
+	};
 
 /* Применение фильтра*/
 	var applyFilter= function (){
@@ -128,7 +128,7 @@
 		}else {
 			previewImg.style.filter = currentFilterName + '(' + currentFilterValue +')';
 		}
-	}
+	};
 
 /* Задаем значение регулятора эффектов по умолчанию (100%)*/
 	var setDefaultEfectLvl = function(){
@@ -136,7 +136,7 @@
 		effectLvlPin.style.left = '100%';
 		/* Высчитывам ширину линии уровня эффектов*/
 		effectLvlLineWidth = effectLvlLine.clientWidth;
-	}
+	};
 
 /* Изменение уровня фильтра (перемещение пина) */
 	var effectLvlLineOffsetX; // Координаты effectLvlLine по оси Х
@@ -151,7 +151,7 @@
 		setPercentValue();
 		setFilterValue();
 		applyFilter();
-	}
+	};
 
 /* Скрытие поля регулировки уровня эффектов*/
 	var hideFilterLvlLine = function(){
@@ -160,29 +160,29 @@
 		}else {
 			effectLvlWrap.classList.remove('hidden');
 		}
-	}
+	};
 
 /* Задаем cлушателей клика на кнопку фильтра*/
-		for (var i = 0; i < filterButtons.length; i++) {	
-			filterButtons[i].addEventListener('click', function (){
-				changeImgFilterName(this);
-				hideFilterLvlLine();
-				setDefaultEfectLvl();
-				setFilterValue();
-				applyFilter();
-			} );
-		}
+	for (var i = 0; i < filterButtons.length; i++) {	
+		filterButtons[i].addEventListener('click', function (){
+			changeImgFilterName(this);
+			hideFilterLvlLine();
+			setDefaultEfectLvl();
+			setFilterValue();
+			applyFilter();
+		} );
+	}
 
 /* События при клике на пин + движение мышки*/
 	effectLvlPin.addEventListener('mousedown', function(){
 		effectLvlLineOffsetX = effectLvlLine.getBoundingClientRect().x;
 		window.addEventListener('mousemove', movePin);
 		window.addEventListener('mousemove', applyFilter);
-	})
+	});
 	window.addEventListener('mouseup', function(){
 		window.removeEventListener('mousemove', movePin);
 		window.removeEventListener('mousemove', applyFilter);
-	})
+	});
 
 /*..........................................................*/
 
@@ -222,21 +222,21 @@
 		}
 		/* Устанавливаем сформированное сообщение*/
 		hashtags.setCustomValidity(message);
-	}
+	};
 
 /* Восстанавливаем значение валидности при изменении текста хэш-тэгов*/
 	var setDefaultValidity = function(){
 		hashtags.setCustomValidity('');
 		hashtags.validity.valid = true;
 		hashtags.classList.remove('invalid');
-	}
+	};
 
 /* Задаем класс невалидного инпута*/
 	var setInvalidInput = function (){
 		if (!hashtags.validity.valid){
 			hashtags.classList.add('invalid');
 		}
-	}
+	};
 
 /* События при изменении в поле хэш-тэг*/
 	hashtags.addEventListener('change', checkHashtgsValidity );
@@ -257,10 +257,10 @@
 /* Закрытие окна редактирования фото */
 	uploadFormClose.addEventListener('click', closeEditPhoto);
 	document.addEventListener('keydown', function (evt) {
-		if (evt.keyCode === 27 && evt.target != photoDescription ) {
+		if (evt.keyCode === 27 && evt.target !== photoDescription ) {
 			closeEditPhoto();
 		}
-	})
+	});
 
 /*..........................................................*/
 
@@ -278,18 +278,18 @@
 			errorBtns[i].addEventListener('click', hideError);
 		}
 		document.body.appendChild(errorSection);
-	}
+	};
 
 /* Прячем сообщение об ошибке */
 	var hideError = function (){
 		document.querySelector('.error').remove();
-	}
+	};
 
 	uploadForm.addEventListener('submit', function(evt){
 		evt.preventDefault();
 		loadingSection.classList.remove('hidden');
 		window.backend.upload(new FormData(uploadForm), closeEditPhoto, showError )		
-	})
+	});
 /*................................................................*/
 
 })();

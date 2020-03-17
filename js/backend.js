@@ -37,7 +37,7 @@
 		xhr.open('GET', URL_LOAD);
 		xhr.send();
 		return xhr
-	}
+	};
 
 /* Отправка данных формы загружаемой фотографии на сервер */
 	var upload = function(data, successHandler, errorHandler){
@@ -71,7 +71,7 @@
 		})
 		xhr.open('POST', URL_UPLOAD) ;
 		xhr.send(data);	
-	}
+	};
 
 /*===================== Экспорт ====================*/
 	window.backend = {
